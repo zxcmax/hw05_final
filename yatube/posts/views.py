@@ -13,7 +13,12 @@ def index(request):
     return render(
         request,
         'posts/index.html',
-        {'index': index, **get_page_context(Post.objects.select_related('group').all(), request)}
+        {
+            'index': index,
+            **get_page_context(
+                Post.objects.select_related('group').all(), request
+            )
+        }
     )
 
 
