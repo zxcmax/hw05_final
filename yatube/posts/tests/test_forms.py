@@ -162,7 +162,10 @@ class CommentFormTest(TestCase):
         )
         # Проверяем, сработал ли редирект
         self.assertRedirects(
-            response, reverse('posts:post_detail', kwargs={'post_id': self.post.id})
+            response, reverse(
+                'posts:post_detail',
+                kwargs={'post_id': self.post.id}
+            )
         )
         # Проверяем, увеличилось ли число комментариев
         self.assertEqual(Comment.objects.count(), comments_count + 1)
