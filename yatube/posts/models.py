@@ -96,5 +96,13 @@ class Follow(models.Model):
         on_delete=models.CASCADE,
     )
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'author'],
+                name='unique_booking'
+            )
+        ]
+
     def __str__(self):
         return f'{self.user} подписан на {self.author}'

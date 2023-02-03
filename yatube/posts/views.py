@@ -13,7 +13,7 @@ def index(request):
     return render(
         request,
         'posts/index.html',
-        {'index': index, **get_page_context(Post.objects.all(), request)}
+        {'index': index, **get_page_context(Post.objects.select_related('group').all(), request)}
     )
 
 
@@ -32,7 +32,7 @@ def profile(request, username):
     following = author.following.filter(
         user=request.user.id,
         author=author
-    )
+    ).exists()
     return render(
         request,
         'posts/profile.html',
@@ -123,7 +123,7 @@ def follow_index(request):
 
 @login_required
 def profile_follow(request, username):
-    author = User.objects.get(username=username)
+    author = get_object_or_404(User, username=username)
     user = request.user
     if author != user:
         Follow.objects.get_or_create(user=user, author=author)
@@ -133,7 +133,5 @@ def profile_follow(request, username):
 @login_required
 def profile_unfollow(request, username):
     user = request.user
-    follow = Follow.objects.filter(user=user, author__username=username)
-    if follow.exists():
-        follow.delete()
+    Follow.objects.filter(user=user, author__username=username).delete()
     return redirect('posts:profile', username=username)

@@ -198,20 +198,24 @@ class PostPagesTests(TestCase):
         new_posts = new_response.content
         self.assertNotEqual(old_posts, new_posts)
 
-    def test_authorized_user_can_follow_and_unfollow(self):
-        """Авторизованный пользователь может подписываться и отписываться."""
+    def test_authorized_user_can_follow(self):
+        """Авторизованный пользователь может подписываться."""
         followers_count = Follow.objects.count()
         self.authorized_client.get(
             reverse('posts:profile_follow', kwargs={'username': 'author'})
         )
         self.assertEqual(Follow.objects.count(), followers_count + 1)
+
+    def test_authorized_user_can_unfollow(self):
+        """Авторизованный пользователь может отписываться."""
+        followers_count = Follow.objects.count()
         self.authorized_client.get(
             reverse('posts:profile_unfollow', kwargs={'username': 'author'})
         )
         self.assertEqual(Follow.objects.count(), followers_count)
 
     def test_follow_page(self):
-        """Новая запись пользователя появляется у тех, кто подписан"""
+        """Новая запись пользователя появляется у тех, кто подписан."""
         first_user = Client()
         first_user.force_login(User.objects.create_user(username='first'))
 
